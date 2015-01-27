@@ -1,4 +1,4 @@
-package com.mkyong;
+//package com.mkyong;
  
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -25,8 +25,8 @@ public class HttpUrlConnectionExample {
  
   public static void main(String[] args) throws Exception {
  
-	String url = "https://accounts.google.com/ServiceLoginAuth";
-	String gmail = "https://mail.google.com/mail/";
+	String url = "https://205.174.62.96/webapps/login/";
+	String gmail = "https://205.174.62.96/webapps/portal/frameset.jsp";
  
 	HttpUrlConnectionExample http = new HttpUrlConnectionExample();
  
@@ -35,7 +35,7 @@ public class HttpUrlConnectionExample {
  
 	// 1. Send a "GET" request, so that you can extract the form's data.
 	String page = http.GetPageContent(url);
-	String postParams = http.getFormParams(page, "username@gmail.com", "password");
+	String postParams = http.getFormParams(page, "UltimateStudent", "UltimateStudent");
  
 	// 2. Construct above post's content and then send a POST request for
 	// authentication
@@ -63,7 +63,7 @@ public class HttpUrlConnectionExample {
 		conn.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
 	}
 	conn.setRequestProperty("Connection", "keep-alive");
-	conn.setRequestProperty("Referer", "https://accounts.google.com/ServiceLoginAuth");
+	conn.setRequestProperty("Referer", "https://205.174.62.96/webapps/login/");
 	conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 	conn.setRequestProperty("Content-Length", Integer.toString(postParams.length()));
  
@@ -150,9 +150,9 @@ public class HttpUrlConnectionExample {
 		String key = inputElement.attr("name");
 		String value = inputElement.attr("value");
  
-		if (key.equals("Email"))
+		if (key.equals("user_id"))
 			value = username;
-		else if (key.equals("Passwd"))
+		else if (key.equals("password"))
 			value = password;
 		paramList.add(key + "=" + URLEncoder.encode(value, "UTF-8"));
 	}
