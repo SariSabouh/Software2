@@ -11,6 +11,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
+import java.net.HttpURLConnection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,14 +20,14 @@ import org.jsoup.select.Elements;
 public class HttpUrlConnectionExample {
  
   private List<String> cookies;
-  private HttpsURLConnection conn;
+  private HttpURLConnection conn;
  
   private final String USER_AGENT = "Mozilla/5.0";
  
   public static void main(String[] args) throws Exception {
  
-	String url = "https://205.174.62.96/webapps/login/";
-	String gmail = "https://205.174.62.96/webapps/portal/frameset.jsp";
+	String url = "http://205.174.62.96/";
+	String gmail = "http://205.174.62.96/webapps/portal/frameset.jsp";
  
 	HttpUrlConnectionExample http = new HttpUrlConnectionExample();
  
@@ -49,7 +50,7 @@ public class HttpUrlConnectionExample {
   private void sendPost(String url, String postParams) throws Exception {
  
 	URL obj = new URL(url);
-	conn = (HttpsURLConnection) obj.openConnection();
+	conn = (HttpURLConnection) obj.openConnection();
  
 	// Acts like a browser
 	conn.setUseCaches(false);
@@ -63,7 +64,7 @@ public class HttpUrlConnectionExample {
 		conn.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
 	}
 	conn.setRequestProperty("Connection", "keep-alive");
-	conn.setRequestProperty("Referer", "https://205.174.62.96/webapps/login/");
+	conn.setRequestProperty("Referer", "https://205.174.62.96/");
 	conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 	conn.setRequestProperty("Content-Length", Integer.toString(postParams.length()));
  
@@ -97,7 +98,7 @@ public class HttpUrlConnectionExample {
   private String GetPageContent(String url) throws Exception {
  
 	URL obj = new URL(url);
-	conn = (HttpsURLConnection) obj.openConnection();
+	conn = (HttpURLConnection) obj.openConnection();
  
 	// default is GET
 	conn.setRequestMethod("GET");
@@ -143,7 +144,7 @@ public class HttpUrlConnectionExample {
 	Document doc = Jsoup.parse(html);
  
 	// Google form id
-	Element loginform = doc.getElementById("gaia_loginform");
+	Element loginform = doc.getElementById("loginFormFields");
 	Elements inputElements = loginform.getElementsByTag("input");
 	List<String> paramList = new ArrayList<String>();
 	for (Element inputElement : inputElements) {
