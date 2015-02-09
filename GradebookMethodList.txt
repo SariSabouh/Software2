@@ -1,0 +1,37 @@
+
+* * * * * * * * * IMPORTANT * * * * * * * * * * *
+*************************************************
+These are to be inserted after the toolMethods
+property in the applicationContext_BBWS.xml file.
+
+You will see several values listed like:
+Context.WS:emulateUser
+Context.WS:logout
+.
+.
+.
+
+..and so on.  Add these after the list of values.
+*************************************************
+
+
+
+Gradebook.WS:getServerVersion
+Gradebook.WS:initializeGradebookWS
+Gradebook.WS:getRequiredEntitlements
+Gradebook.WS:getGradebookColumns
+Gradebook.WS:saveGrades
+Gradebook.WS:saveColumns
+Gradebook.WS:deleteColumns
+Gradebook.WS:getGrades
+Gradebook.WS:saveAttempts
+Gradebook.WS:deleteAttempts
+Gradebook.WS:getAttempts
+Gradebook.WS:saveGradebookTypes
+Gradebook.WS:deleteGradebookTypes
+Gradebook.WS:getGradebookTypes
+Gradebook.WS:deleteGrades
+Gradebook.WS:updateColumnAttribute
+Gradebook.WS:saveGradingSchemas
+Gradebook.WS:getGradingSchemas
+Gradebook.WS:deleteGradingSchemas
