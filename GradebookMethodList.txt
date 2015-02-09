@@ -5,33 +5,41 @@ These are to be inserted after the toolMethods
 property in the applicationContext_BBWS.xml file.
 
 You will see several values listed like:
-Context.WS:emulateUser
-Context.WS:logout
+<value>Context.WS:emulateUser</value>
+<value>Context.WS:logout</value>
 .
 .
 .
 
-..and so on.  Add these after the list of values.
+..and so on.  Add these after the list of values,
+where the last one there currently is the line:
+
+<value>Context.WS.registerTool</value>
+
+and BEFORE the part where it says </list>.
+
+Yee.
+
 *************************************************
 
 
 
-Gradebook.WS:getServerVersion
-Gradebook.WS:initializeGradebookWS
-Gradebook.WS:getRequiredEntitlements
-Gradebook.WS:getGradebookColumns
-Gradebook.WS:saveGrades
-Gradebook.WS:saveColumns
-Gradebook.WS:deleteColumns
-Gradebook.WS:getGrades
-Gradebook.WS:saveAttempts
-Gradebook.WS:deleteAttempts
-Gradebook.WS:getAttempts
-Gradebook.WS:saveGradebookTypes
-Gradebook.WS:deleteGradebookTypes
-Gradebook.WS:getGradebookTypes
-Gradebook.WS:deleteGrades
-Gradebook.WS:updateColumnAttribute
-Gradebook.WS:saveGradingSchemas
-Gradebook.WS:getGradingSchemas
-Gradebook.WS:deleteGradingSchemas
+<value>Gradebook.WS:getServerVersion</value>
+<value>Gradebook.WS:initializeGradebookWS</value>
+<value>Gradebook.WS:getRequiredEntitlements</value>
+<value>Gradebook.WS:getGradebookColumns</value>
+<value>Gradebook.WS:saveGrades</value>
+<value>Gradebook.WS:saveColumns</value>
+<value>Gradebook.WS:deleteColumns</value>
+<value>Gradebook.WS:getGrades</value>
+<value>Gradebook.WS:saveAttempts</value>
+<value>Gradebook.WS:deleteAttempts</value>
+<value>Gradebook.WS:getAttempts</value>
+<value>Gradebook.WS:saveGradebookTypes</value>
+<value>Gradebook.WS:deleteGradebookTypes</value>
+<value>Gradebook.WS:getGradebookTypes</value>
+<value>Gradebook.WS:deleteGrades</value>
+<value>Gradebook.WS:updateColumnAttribute</value>
+<value>Gradebook.WS:saveGradingSchemas</value>
+<value>Gradebook.WS:getGradingSchemas</value>
+<value>Gradebook.WS:deleteGradingSchemas</value>
