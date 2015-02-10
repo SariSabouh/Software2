@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:/bbws.properties" />
+	</bean>
+  
+  <bean id="loginService" class="edu.ku.it.si.login.service.LoginServiceImpl" />
+   
+  <bean id="loginController" class="edu.ku.it.si.login.controller.LoginController" >
+
+    <property name="loginService" ref="loginService" />
+   
+   	<property name="blackboardServerURL" value="${bbws.blackboardServerURL}" />
+   	<property name="clientVendorId" value="${bbws.clientVendorId}" />
+   	<property name="clientProgramId" value="${bbws.clientProgramId}" />
+   	<property name="modulePath" value="${bbws.modulePath}" />
+   	<property name="sharedSecret" value="${bbws.sharedSecret}" />
+
+   	
+   
+   </bean>
+
+</beans>
+
+
