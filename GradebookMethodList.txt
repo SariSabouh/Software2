@@ -23,7 +23,7 @@ Yee.
 *************************************************
 
 
-
+<value>Course.WS:getCourse</value>
 <value>Gradebook.WS:getServerVersion</value>
 <value>Gradebook.WS:initializeGradebookWS</value>
 <value>Gradebook.WS:getRequiredEntitlements</value>
