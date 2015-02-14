@@ -31,6 +31,11 @@ import edu.ku.it.si.bbcoursews.generated.CourseWSStub.CourseFilter;
 import edu.ku.it.si.bbcoursews.generated.CourseWSStub.CourseVO;
 import edu.ku.it.si.bbcoursews.generated.CourseWSStub.GetCourse;
 import edu.ku.it.si.bbcoursews.generated.CourseWSStub.GetCourseResponse;
+import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub;
+import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGrades;
+import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradesResponse;
+import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ScoreFilter;
+import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ScoreVO;
 
 /**
  * Implements methods to enable getting the courses
@@ -51,6 +56,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			throws RemoteException {
 		
 		List<String> courseTitles = new ArrayList<String>();
+		List<String> scoreNum = new ArrayList<String>();
 		
 		/*This specifies where the modules directory is located
 		In the modules directory must be the rampart.mar file
@@ -76,10 +82,14 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		"http://" + blackboardServerURL + "/webapps/ws/services/Context.WS");
 		
 		ServiceClient client = contextWSStub._getServiceClient();
+		ServiceClient client2 = contextWSStub._getServiceClient();
 
 		Options options = client.getOptions();
+		Options options2 = client.getOptions();
 
 		options.setProperty(HTTPConstants.HTTP_PROTOCOL_VERSION,
+				HTTPConstants.HEADER_PROTOCOL_10);
+		options2.setProperty(HTTPConstants.HTTP_PROTOCOL_VERSION,
 				HTTPConstants.HEADER_PROTOCOL_10);
 		
 		/*
@@ -205,17 +215,21 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			 * method.
 			 */
 			GetCourse getCourse = new GetCourse();
+			GetGrades getGrades = new GetGrades();
 			
 			CourseFilter courseFilter = new CourseFilter();
-			
+			ScoreFilter scoreFilter = new ScoreFilter();
 			//Filter type 3 is for the id value of the 
 			//course which is the PK1 column value in 
 			//the course_main table
 			courseFilter.setFilterType(3);
+			scoreFilter.setFilterType(1);
 			
 			courseFilter.setIds(courseIds);
+			scoreFilter.setId(courseIds[1]);
 			
 			getCourse.setFilter(courseFilter);
+			getGrades.setFilter(scoreFilter);
 			
 			
 			/*
@@ -230,12 +244,18 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			 */
 			CourseWSStub courseWSStub = new CourseWSStub(ctx,
 					"http://" + blackboardServerURL + "/webapps/ws/services/Course.WS");
+			GradebookWSStub gradebookWSStub = new GradebookWSStub(ctx,
+					"http://" + blackboardServerURL + "/webapps/ws/services/Gradebook.WS");
 
 			client = courseWSStub._getServiceClient();
+			client2 = gradebookWSStub._getServiceClient();
 
 			options = client.getOptions();
+			options2 = client2.getOptions();
 
 			options.setProperty(HTTPConstants.HTTP_PROTOCOL_VERSION,
+					HTTPConstants.HEADER_PROTOCOL_10);
+			options2.setProperty(HTTPConstants.HTTP_PROTOCOL_VERSION,
 					HTTPConstants.HEADER_PROTOCOL_10);
 			
 			/*
@@ -247,6 +267,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			// Next, setup ws-security settings
 			// Reuse the same callback handler
 			options.setProperty(WSHandlerConstants.PW_CALLBACK_REF, pwcb);
+			options2.setProperty(WSHandlerConstants.PW_CALLBACK_REF, pwcb);
 			ofc = new OutflowConfiguration();
 			ofc.setActionItems("UsernameToken Timestamp");
 			ofc.setUser("session");
@@ -254,19 +275,25 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			ofc.setPasswordType("PasswordText");
 			options.setProperty(WSSHandlerConstants.OUTFLOW_SECURITY, ofc
 					.getProperty());
+			options2.setProperty(WSSHandlerConstants.OUTFLOW_SECURITY, ofc
+					.getProperty());
 			client.engageModule("rampart");
+			client2.engageModule("rampart");
 			
 			/*
 			 * STEP 10 - make the request to this web service
 			 */
 			
 			GetCourseResponse getCourseResponse = courseWSStub.getCourse(getCourse);
+			getGrades.setCourseId(courseIds[0]);
+			GetGradesResponse getGradeResponse = gradebookWSStub.getGrades(getGrades);
 			
 			
 			/*
 			 * STEP 11 - process the response from this web service
 			 */
 			CourseVO [] courseVOs = getCourseResponse.get_return() ;
+			ScoreVO [] scoreVOs = getGradeResponse.get_return();
 			
 		
 			for (CourseVO courseVO : courseVOs) {
@@ -274,11 +301,15 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 				courseTitles.add( courseVO.getName() );
 				
 			}
+			for (ScoreVO scoreVO : scoreVOs) {
+				
+				scoreNum.add(scoreVO.getGrade() );
+			}
 			
 			
 		}
 		
-		return courseTitles ;
+		return scoreNum;
 
 		
 	}

@@ -34,6 +34,26 @@
    			<value>Context.WS.loginTool</value>
    			<value>Context.WS.registerTool</value>
    			<value>Course.WS:getCourse</value>
+   			<value>Course.WS:getCourse</value>
+			<value>Gradebook.WS:getServerVersion</value>
+			<value>Gradebook.WS:initializeGradebookWS</value>
+			<value>Gradebook.WS:getRequiredEntitlements</value>
+			<value>Gradebook.WS:getGradebookColumns</value>
+			<value>Gradebook.WS:saveGrades</value>
+			<value>Gradebook.WS:saveColumns</value>
+			<value>Gradebook.WS:deleteColumns</value>
+			<value>Gradebook.WS:getGrades</value>
+			<value>Gradebook.WS:saveAttempts</value>
+			<value>Gradebook.WS:deleteAttempts</value>
+			<value>Gradebook.WS:getAttempts</value>
+			<value>Gradebook.WS:saveGradebookTypes</value>
+			<value>Gradebook.WS:deleteGradebookTypes</value>
+			<value>Gradebook.WS:getGradebookTypes</value>
+			<value>Gradebook.WS:deleteGrades</value>
+			<value>Gradebook.WS:updateColumnAttribute</value>
+			<value>Gradebook.WS:saveGradingSchemas</value>
+			<value>Gradebook.WS:getGradingSchemas</value>
+			<value>Gradebook.WS:deleteGradingSchemas</value>
    		</list>
    	</property>
    	
