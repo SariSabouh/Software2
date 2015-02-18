@@ -226,7 +226,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			scoreFilter.setFilterType(1);
 			
 			courseFilter.setIds(courseIds);
-			scoreFilter.setId(courseIds[1]);
+			scoreFilter.setId(courseIds[0]);
 			
 			getCourse.setFilter(courseFilter);
 			getGrades.setFilter(scoreFilter);
