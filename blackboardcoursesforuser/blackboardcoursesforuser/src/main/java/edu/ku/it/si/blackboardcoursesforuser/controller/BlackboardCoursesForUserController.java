@@ -53,7 +53,7 @@ public class BlackboardCoursesForUserController {
 			
 			List<String> courseTitles = blackboardCoursesForUserService.getBlackboardCoursesForUser(modulePath, blackboardServerURL, sharedSecret, clientVendorId, clientProgramId, username) ;
 	
-		    logger.info("The grade for user " + getUsername() + " in his class is: " + courseTitles);
+		    logger.info("The grades for user " + getUsername() + " in this class are: " + courseTitles);
 		
 		} catch (RemoteException e) {
 			

@@ -32,6 +32,10 @@ import edu.ku.it.si.bbcoursews.generated.CourseWSStub.CourseVO;
 import edu.ku.it.si.bbcoursews.generated.CourseWSStub.GetCourse;
 import edu.ku.it.si.bbcoursews.generated.CourseWSStub.GetCourseResponse;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub;
+import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ColumnFilter;
+import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ColumnVO;
+import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradebookColumns;
+import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradebookColumnsResponse;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGrades;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradesResponse;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ScoreFilter;
@@ -187,7 +191,6 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			 * which is an Array of CourseIDVO objects
 			 */
 			CourseIdVO [] courseIdVOs = getMembershipsResponse.get_return() ;
-			
             /*
              *Create an Array of String objects where each String
              *is a Course id value
@@ -216,20 +219,25 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			 */
 			GetCourse getCourse = new GetCourse();
 			GetGrades getGrades = new GetGrades();
+			GetGradebookColumns getColumns = new GetGradebookColumns(); //AR
 			
 			CourseFilter courseFilter = new CourseFilter();
 			ScoreFilter scoreFilter = new ScoreFilter();
+			ColumnFilter columnFilter = new ColumnFilter(); //AR
 			//Filter type 3 is for the id value of the 
 			//course which is the PK1 column value in 
 			//the course_main table
 			courseFilter.setFilterType(3);
 			scoreFilter.setFilterType(1);
+			columnFilter.setFilterType(3); //AR
 			
 			courseFilter.setIds(courseIds);
 			scoreFilter.setId(courseIds[0]);
+			columnFilter.setIds(courseIds); //AR
 			
 			getCourse.setFilter(courseFilter);
 			getGrades.setFilter(scoreFilter);
+			getColumns.setFilter(columnFilter);//AR
 			
 			
 			/*
@@ -287,15 +295,22 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			GetCourseResponse getCourseResponse = courseWSStub.getCourse(getCourse);
 			getGrades.setCourseId(courseIds[0]);
 			GetGradesResponse getGradeResponse = gradebookWSStub.getGrades(getGrades);
-			
+			//AR
+			GetGradebookColumnsResponse getGradebookColumnsResponse = gradebookWSStub.getGradebookColumns(getColumns);
+			getColumns.setCourseId(courseIds[0]);
 			
 			/*
 			 * STEP 11 - process the response from this web service
 			 */
 			CourseVO [] courseVOs = getCourseResponse.get_return() ;
 			ScoreVO [] scoreVOs = getGradeResponse.get_return();
+			//AR
+			ColumnVO [] columnVOs = getGradebookColumnsResponse.get_return();
+			scoreNum.add(String.valueOf(columnVOs[0]==null));
+			String [] columnIds = new String[columnVOs.length];
+			scoreNum.add(String.valueOf(columnVOs.length));
+			columnFilter.setIds(columnIds);
 			
-		
 			for (CourseVO courseVO : courseVOs) {
 				
 				courseTitles.add( courseVO.getName() );
@@ -303,10 +318,16 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			}
 			for (ScoreVO scoreVO : scoreVOs) {
 				
+				scoreNum.add(scoreVO.getColumnId() );
 				scoreNum.add(scoreVO.getGrade() );
 			}
 			
-			
+			/*for (ColumnVO columnVO : columnVOs) {
+				
+				scoreNum.add(columnVO.toString() );
+			}*/
+			//columnVOs seem to have only one element which is null
+			//scoreNum.add(columnVOs[0].toString());
 		}
 		
 		return scoreNum;
