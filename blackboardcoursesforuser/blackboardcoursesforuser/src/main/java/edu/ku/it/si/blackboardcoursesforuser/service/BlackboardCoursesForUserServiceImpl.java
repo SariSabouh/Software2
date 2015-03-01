@@ -51,6 +51,7 @@ import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ScoreVO;
  */
 @SuppressWarnings("deprecation")
 public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesForUserService {
+	
 
 	private static final Logger logger = Logger.getLogger(BlackboardCoursesForUserServiceImpl.class.getName() );
 
@@ -202,13 +203,12 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			
 			for (CourseIdVO courseIdVO : courseIdVOs) {
 
-				courseIds[i] = courseIdVO.getExternalId() ;
+				courseIds[i] = courseIdVO.getExternalId();
 				
 				i++;
 				
 			}
 			
-			logger.debug("Course ids found for classes " + username + " is enrolled in are " + Arrays.asList(courseIds));
 			
 			/*
 			 * Create a GetCourse object that is used
@@ -219,25 +219,25 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			 */
 			GetCourse getCourse = new GetCourse();
 			GetGrades getGrades = new GetGrades();
-			GetGradebookColumns getColumns = new GetGradebookColumns(); //AR
+			GetGradebookColumns getColumns = new GetGradebookColumns();
 			
 			CourseFilter courseFilter = new CourseFilter();
 			ScoreFilter scoreFilter = new ScoreFilter();
-			ColumnFilter columnFilter = new ColumnFilter(); //AR
+			ColumnFilter columnFilter = new ColumnFilter(); 
 			//Filter type 3 is for the id value of the 
 			//course which is the PK1 column value in 
 			//the course_main table
 			courseFilter.setFilterType(3);
 			scoreFilter.setFilterType(1);
-			columnFilter.setFilterType(3); //AR
+			columnFilter.setFilterType(1); 
 			
 			courseFilter.setIds(courseIds);
 			scoreFilter.setId(courseIds[0]);
-			columnFilter.setIds(courseIds); //AR
+			columnFilter.setIds(courseIds); 
 			
 			getCourse.setFilter(courseFilter);
 			getGrades.setFilter(scoreFilter);
-			getColumns.setFilter(columnFilter);//AR
+			getColumns.setFilter(columnFilter);
 			
 			
 			/*
@@ -295,37 +295,44 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			GetCourseResponse getCourseResponse = courseWSStub.getCourse(getCourse);
 			getGrades.setCourseId(courseIds[0]);
 			GetGradesResponse getGradeResponse = gradebookWSStub.getGrades(getGrades);
-			//AR
-			GetGradebookColumnsResponse getGradebookColumnsResponse = gradebookWSStub.getGradebookColumns(getColumns);
+			getGrades.setCourseId(courseIds[0]);
+			
 			getColumns.setCourseId(courseIds[0]);
+			GetGradebookColumnsResponse getGradebookColumnsResponse = gradebookWSStub.getGradebookColumns(getColumns);
 			
 			/*
 			 * STEP 11 - process the response from this web service
 			 */
 			CourseVO [] courseVOs = getCourseResponse.get_return() ;
 			ScoreVO [] scoreVOs = getGradeResponse.get_return();
-			//AR
+			
 			ColumnVO [] columnVOs = getGradebookColumnsResponse.get_return();
-			scoreNum.add(String.valueOf(columnVOs[0]==null));
-			String [] columnIds = new String[columnVOs.length];
-			scoreNum.add(String.valueOf(columnVOs.length));
-			columnFilter.setIds(columnIds);
 			
 			for (CourseVO courseVO : courseVOs) {
 				
 				courseTitles.add( courseVO.getName() );
 				
 			}
+			
+			logger.debug("Course names found for classes " + username + " is enrolled in are " + courseTitles.toString());
+			
 			for (ScoreVO scoreVO : scoreVOs) {
 				
 				scoreNum.add(scoreVO.getColumnId() );
 				scoreNum.add(scoreVO.getGrade() );
 			}
 			
-			/*for (ColumnVO columnVO : columnVOs) {
-				
-				scoreNum.add(columnVO.toString() );
-			}*/
+			for (ColumnVO columnVO : columnVOs) {
+				for(int j = 0; j<scoreNum.size(); j++){
+					if(scoreNum.get(j).equals(columnVO.getId())){
+						scoreNum.set(j, columnVO.getColumnName());
+					}
+					
+				}
+			}
+			
+			
+			
 			//columnVOs seem to have only one element which is null
 			//scoreNum.add(columnVOs[0].toString());
 		}

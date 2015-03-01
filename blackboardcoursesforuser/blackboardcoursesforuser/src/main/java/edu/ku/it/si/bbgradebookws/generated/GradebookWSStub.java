@@ -4319,7 +4319,6 @@
            _operationClient.execute(false);
 
                     }
-                
                     /**
                      * Auto generated method signature
                      * 
@@ -4329,7 +4328,6 @@
                      */
 
                     
-
                             public  edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradebookColumnsResponse getGradebookColumns(
 
                             edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradebookColumns getGradebookColumns30)
@@ -4372,24 +4370,19 @@
         _operationClient.addMessageContext(_messageContext);
 
         //execute the operation client
-        _operationClient.execute(true);
-
+        _operationClient.execute(true); //ERROR HERE
          
                org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(
                                            org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
                 org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
                 
-                
                                 java.lang.Object object = fromOM(
                                              _returnEnv.getBody().getFirstElement() ,
                                              edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradebookColumnsResponse.class,
                                               getEnvelopeNamespaces(_returnEnv));
-
-                               
                                         return (edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradebookColumnsResponse)object;
-                                   
+                                       
          }catch(org.apache.axis2.AxisFault f){
-
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
             if (faultElt!=null){
                 if (faultExceptionNameMap.containsKey(faultElt.getQName())){
@@ -4406,7 +4399,6 @@
                         java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
                                    new java.lang.Class[]{messageClass});
                         m.invoke(ex,new java.lang.Object[]{messageObject});
-                        
 
                         throw new java.rmi.RemoteException(ex.getMessage(), ex);
                     }catch(java.lang.ClassCastException e){
