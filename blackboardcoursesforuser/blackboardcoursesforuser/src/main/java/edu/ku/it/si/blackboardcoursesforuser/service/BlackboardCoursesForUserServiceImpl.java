@@ -311,7 +311,6 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			for (CourseVO courseVO : courseVOs) {
 				
 				courseTitles.add( courseVO.getName() );
-				
 			}
 			
 			logger.debug("Course names found for classes " + username + " is enrolled in are " + courseTitles.toString());
@@ -319,7 +318,17 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			for (ScoreVO scoreVO : scoreVOs) {
 				
 				scoreNum.add(scoreVO.getColumnId() );
-				scoreNum.add(scoreVO.getGrade() );
+				if(scoreVO.getGrade() == null)
+					changeGrade(scoreVO, "77.0");
+				scoreNum.add(scoreVO.getGrade());
+				String [] successfullySaved = gradebookWSStub.saveGrades(courseIds[0], grades, true);
+				if (successfullySaved != null) { 
+					for (int z = 0; z < successfullySaved.length; z++) {
+						out.println("saved: " + successfullySaved[z] + "<br>");
+					}
+		
+				}
+				
 			}
 			
 			for (ColumnVO columnVO : columnVOs) {
@@ -332,15 +341,31 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			}
 			
 			
-			
-			//columnVOs seem to have only one element which is null
-			//scoreNum.add(columnVOs[0].toString());
 		}
 		
+		System.out.println(gradeDisplay(scoreNum));
 		return scoreNum;
 
 		
 	}
+	
+	public String gradeDisplay(List<String> list){
+		String output = "";
+		for(int i = 0; i < list.size(); i++)
+		{
+			if(i % 2 == 0)
+				output += list.get(i) + " grade is: ";
+			else
+				output += list.get(i) + "\n";
+		}
+		return output;
+	}
+	
+	public void changeGrade(ScoreVO score, String grade){
+		score.setGrade(grade);
+	}
+	
+	
 	
 	/**
 	 * Store the session id value associated with the logged 
