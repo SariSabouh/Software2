@@ -332,8 +332,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			logger.debug("Course names found for classes " + username + " is enrolled in are " + courseTitles.toString());
 			
 			
-			scoreVOs = checkArray(scoreVOs, columnVOs);
-				
+			scoreVOs = checkArray(scoreVOs, columnVOs);	
 			
 			
 			for(int j = 0; j<columnVOs.length; j++){
@@ -341,8 +340,8 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 				for(int k = 0; k<scoreVOs.length; k++){
 					if(scoreVOs[k].getColumnId().equals(columnVOs[j].getId()))
 						scoreNum.add(scoreVOs[k].getGrade());
-					if(scoreVOs[k].getGrade().equals("0.01"))
-						changeGrade(scoreVOs[k], "99.9");
+					if(scoreVOs[k].getGrade().equals("0.1"))
+						changeGrade(scoreVOs[k], "111.1");
 				}
 			}
 			updateGrades(gradebookWSStub, scoreVOs, courseIds[0]);
@@ -363,10 +362,11 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		for(int i = 0; i<col.length; i++){
 			if(!ids.contains(col[i].getId())){
 				ScoreVO grade = new ScoreVO();
-				grade.setGrade("0.01");
+				grade.setGrade("0.1");
 				grade.setCourseId(scr[0].getCourseId());
 				grade.setColumnId(col[i].getId());
-				grade.setId("_56_1");
+				grade.setId("_58_1");
+				grade.setMemberId(scr[0].getMemberId());
 				output.add(grade);
 			}
 		}
