@@ -1,7 +1,6 @@
 package edu.ku.it.si.blackboardcoursesforuser.service;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,6 @@ import org.apache.rampart.handler.config.OutflowConfiguration;
 import org.apache.ws.security.WSPasswordCallback;
 import org.apache.ws.security.handler.WSHandlerConstants;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import edu.ku.it.si.bbcontextws.generated.ContextWSStub;
 import edu.ku.it.si.bbcontextws.generated.ContextWSStub.CourseIdVO;
 import edu.ku.it.si.bbcontextws.generated.ContextWSStub.GetMemberships;
@@ -34,7 +32,6 @@ import edu.ku.it.si.bbcoursews.generated.CourseWSStub.GetCourse;
 import edu.ku.it.si.bbcoursews.generated.CourseWSStub.GetCourseResponse;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.AttemptFilter;
-import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.AttemptVO;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ColumnFilter;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ColumnVO;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetAttempts;
@@ -42,7 +39,7 @@ import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradebookColumns;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradebookColumnsResponse;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGrades;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradesResponse;
-import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.SaveColumnsResponse;
+import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.SaveColumns;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.SaveGrades;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ScoreFilter;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ScoreVO;
@@ -60,6 +57,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 	
 
 	private static final Logger logger = Logger.getLogger(BlackboardCoursesForUserServiceImpl.class.getName() );
+	GradebookWSStub gradebookWSStub;
 
 	@Override
 	public List<String> getBlackboardCoursesForUser(String modulePath, String blackboardServerURL,
@@ -258,7 +256,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			 */
 			CourseWSStub courseWSStub = new CourseWSStub(ctx,
 					"http://" + blackboardServerURL + "/webapps/ws/services/Course.WS");
-			GradebookWSStub gradebookWSStub = new GradebookWSStub(ctx,
+			gradebookWSStub = new GradebookWSStub(ctx,
 					"http://" + blackboardServerURL + "/webapps/ws/services/Gradebook.WS");
 
 			client = courseWSStub._getServiceClient();
@@ -321,7 +319,6 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			CourseVO [] courseVOs = getCourseResponse.get_return() ;
 			ScoreVO [] scoreVOs = getGradeResponse.get_return();
 			ColumnVO [] columnVOs = getGradebookColumnsResponse.get_return();
-		//	AttemptVO [] attemptVOs = gradebookWSStub.getAttempts(getAttempts).get_return();
 			
 			
 			for (CourseVO courseVO : courseVOs) {
@@ -332,7 +329,8 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			logger.debug("Course names found for classes " + username + " is enrolled in are " + courseTitles.toString());
 			
 			
-			scoreVOs = checkArray(scoreVOs, columnVOs);	
+			//columnVOs = createColumn(columnVOs, "Add3"); // LINE THAT ADDS A COOLUMN WITH DESIRED NAME, after adding comment it to change grade to 99!
+			scoreVOs = checkArray(scoreVOs, columnVOs);
 			
 			
 			for(int j = 0; j<columnVOs.length; j++){
@@ -340,11 +338,11 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 				for(int k = 0; k<scoreVOs.length; k++){
 					if(scoreVOs[k].getColumnId().equals(columnVOs[j].getId()))
 						scoreNum.add(scoreVOs[k].getGrade());
-					if(scoreVOs[k].getGrade().equals("0.1"))
-						changeGrade(scoreVOs[k], "111.1");
+					if(scoreVOs[k].getGrade() == null)
+						changeGrade(scoreVOs[k], "99");
 				}
 			}
-			updateGrades(gradebookWSStub, scoreVOs, courseIds[0]);
+			updateGrades(scoreVOs, courseIds[0]);
 		}
 		
 		
@@ -362,11 +360,20 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		for(int i = 0; i<col.length; i++){
 			if(!ids.contains(col[i].getId())){
 				ScoreVO grade = new ScoreVO();
-				grade.setGrade("0.1");
 				grade.setCourseId(scr[0].getCourseId());
+				grade.setGrade(null);
 				grade.setColumnId(col[i].getId());
 				grade.setId("_58_1");
 				grade.setMemberId(scr[0].getMemberId());
+				grade.setExempt(false);
+				grade.setExpansionData(scr[0].getExpansionData());
+				grade.setInstructorComments(" ");
+				grade.setManualGrade(null);
+				grade.setManualScore(0.1);
+				grade.setSchemaGradeValue(null);
+				grade.setStatus(1);
+				grade.setStudentComments(" ");
+				
 				output.add(grade);
 			}
 		}
@@ -380,7 +387,6 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			}
 			if(i<output.size())
 				newScores[i+1] = output.get(i);
-			System.out.println(newScores[i].getColumnId());
 		}
 		return newScores;
 	}
@@ -397,7 +403,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		return output;
 	}
 	
-	public void updateGrades(GradebookWSStub gws, ScoreVO[] scores, String id) throws RemoteException{
+	public void updateGrades(ScoreVO[] scores, String id) throws RemoteException{
 		SaveGrades save = new SaveGrades();
 		save.setCourseId(id);
 		save.setGrades(scores);
@@ -405,14 +411,54 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		for(ScoreVO score: scores){
 			changeGrade(score, score.getGrade());
 		}
-		gws.saveGrades(save);
-		
+		gradebookWSStub.saveGrades(save);	
 	}
 	
 	public void changeGrade(ScoreVO score, String grade){
-		score.setManualGrade(grade);
 		score.setGrade(grade);
+		score.setManualGrade(grade);
 		score.setManualScore(Double.parseDouble(grade));
+	}
+	
+	public ColumnVO[] createColumn(ColumnVO[] col, String name) throws RemoteException{
+		ArrayList<ColumnVO> columns = new ArrayList<ColumnVO>();
+		for(int i = 0; i<col.length; i++){
+			columns.add(col[i]);
+		}
+		ColumnVO newCol = new ColumnVO();
+		newCol.setAggregationModel("Last");
+		newCol.setCalculationType("NON_CALCULATED");
+		newCol.setColumnDisplayName(name);
+		newCol.setColumnName(name);
+		newCol.setId("_200_1");
+		newCol.setCourseId(col[0].getCourseId());
+		newCol.setDateCreated(col[3].getDateCreated());
+		newCol.setDateModified(col[3].getDateModified());
+		newCol.setDescription("");
+		newCol.setDescriptionType("HTML");
+		newCol.setDueDate(0);
+		newCol.setExpansionData(col[3].getExpansionData());
+		newCol.setMultipleAttempts(0);
+		newCol.setHideAttempt(false);
+		newCol.setPosition(4);
+		newCol.setPossible(101);
+		newCol.setScaleId(col[3].getScaleId());
+		newCol.setScorable(true);
+		newCol.setShowStatsToStudent(false);
+		newCol.setVisible(true);
+		newCol.setVisibleInBook(true);
+		newCol.setWeight(0);
+		newCol.setDeleted(false);
+		newCol.setExternalGrade(false);
+		
+		columns.add(newCol);
+		SaveColumns save = new SaveColumns();
+		save.setColumns(col);
+		save.setCourseId(col[0].getCourseId());
+		save.addColumns(newCol);
+		gradebookWSStub.saveColumns(save);
+		ColumnVO[] newColumns = columns.toArray(col);
+		return newColumns;
 	}
 	
 	
