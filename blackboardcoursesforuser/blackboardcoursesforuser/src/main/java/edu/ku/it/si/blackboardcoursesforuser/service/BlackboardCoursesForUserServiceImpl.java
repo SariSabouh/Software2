@@ -328,8 +328,9 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			
 			logger.debug("Course names found for classes " + username + " is enrolled in are " + courseTitles.toString());
 			
-			
-			//columnVOs = createColumn(columnVOs, "Add3"); // LINE THAT ADDS A COOLUMN WITH DESIRED NAME, after adding comment it to change grade to 99!
+
+
+			columnVOs = createColumn(columnVOs, "delete2"); // LINE THAT ADDS A COOLUMN WITH DESIRED NAME, after adding comment it to change grade to 99!
 			scoreVOs = checkArray(scoreVOs, columnVOs);
 			
 			
@@ -339,7 +340,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 					if(scoreVOs[k].getColumnId().equals(columnVOs[j].getId()))
 						scoreNum.add(scoreVOs[k].getGrade());
 					if(scoreVOs[k].getGrade() == null)
-						changeGrade(scoreVOs[k], "99");
+						changeGrade(scoreVOs[k], "31");
 				}
 			}
 			updateGrades(scoreVOs, courseIds[0]);
@@ -422,8 +423,10 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 	
 	public ColumnVO[] createColumn(ColumnVO[] col, String name) throws RemoteException{
 		ArrayList<ColumnVO> columns = new ArrayList<ColumnVO>();
+		System.out.println(col[4].getColumnDisplayName());
 		for(int i = 0; i<col.length; i++){
-			columns.add(col[i]);
+			if(i != 4)
+				columns.add(col[i]);
 		}
 		ColumnVO newCol = new ColumnVO();
 		newCol.setAggregationModel("Last");
@@ -452,12 +455,12 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		newCol.setExternalGrade(false);
 		
 		columns.add(newCol);
+		ColumnVO[] newColumns = columns.toArray(col);
 		SaveColumns save = new SaveColumns();
-		save.setColumns(col);
+		save.setColumns(newColumns);
 		save.setCourseId(col[0].getCourseId());
 		save.addColumns(newCol);
 		gradebookWSStub.saveColumns(save);
-		ColumnVO[] newColumns = columns.toArray(col);
 		return newColumns;
 	}
 	
