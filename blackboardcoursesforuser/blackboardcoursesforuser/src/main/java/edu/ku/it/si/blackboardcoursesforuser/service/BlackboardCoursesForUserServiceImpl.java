@@ -34,6 +34,7 @@ import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.AttemptFilter;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ColumnFilter;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ColumnVO;
+import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.DeleteColumns;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetAttempts;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradebookColumns;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradebookColumnsResponse;
@@ -329,9 +330,10 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			logger.debug("Course names found for classes " + username + " is enrolled in are " + courseTitles.toString());
 			
 			
-			//columnVOs = createColumn(columnVOs, "Add3"); // LINE THAT ADDS A COOLUMN WITH DESIRED NAME, after adding comment it to change grade to 99!
+			//columnVOs = createColumn(columnVOs, "Add4"); // LINE THAT ADDS A COOLUMN WITH DESIRED NAME, after adding comment it to change grade to 99!
 			scoreVOs = checkArray(scoreVOs, columnVOs);
 			
+			//deleteColumn(columnVOs, 3); // LINE THAT DELETS A COLUMN TAKES THE ARRAY OF COLUMNS AND THE LOCATION OF THE COLUMN
 			
 			for(int j = 0; j<columnVOs.length; j++){
 				scoreNum.add(columnVOs[j].getColumnName());
@@ -350,6 +352,20 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		return scoreNum;
 
 		
+	}
+	
+	public void deleteColumn(ColumnVO[] col, int i) throws RemoteException{
+		System.out.println(col[i].getColumnDisplayName());
+		DeleteColumns del = new DeleteColumns();
+		del.setCourseId(col[i].getCourseId());
+		String [] ids = {col[i].getId()};
+		del.setIdsToDelete(ids);
+		del.setOnlyIfEmpty(false);
+		gradebookWSStub.deleteColumns(del);
+		SaveColumns save = new SaveColumns();
+		save.setColumns(col);
+		save.setCourseId(col[i].getCourseId());
+		updateColumns(save);
 	}
 	
 	public ScoreVO[] checkArray(ScoreVO[] scr, ColumnVO[] col){
@@ -420,6 +436,10 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		score.setManualScore(Double.parseDouble(grade));
 	}
 	
+	public void updateColumns(SaveColumns save) throws RemoteException{
+		gradebookWSStub.saveColumns(save);
+	}
+	
 	public ColumnVO[] createColumn(ColumnVO[] col, String name) throws RemoteException{
 		ArrayList<ColumnVO> columns = new ArrayList<ColumnVO>();
 		for(int i = 0; i<col.length; i++){
@@ -450,14 +470,13 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		newCol.setWeight(0);
 		newCol.setDeleted(false);
 		newCol.setExternalGrade(false);
-		
 		columns.add(newCol);
 		SaveColumns save = new SaveColumns();
 		save.setColumns(col);
 		save.setCourseId(col[0].getCourseId());
 		save.addColumns(newCol);
-		gradebookWSStub.saveColumns(save);
 		ColumnVO[] newColumns = columns.toArray(col);
+		updateColumns(save);
 		return newColumns;
 	}
 	
