@@ -331,8 +331,13 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 
 
 			columnVOs = createColumn(columnVOs, "delete2"); // LINE THAT ADDS A COOLUMN WITH DESIRED NAME, after adding comment it to change grade to 99!
+=======
+			
+			//columnVOs = createColumn(columnVOs, "Add4"); // LINE THAT ADDS A COOLUMN WITH DESIRED NAME, after adding comment it to change grade to 99!
+>>>>>>> origin/master
 			scoreVOs = checkArray(scoreVOs, columnVOs);
 			
+			//deleteColumn(columnVOs, 3); // LINE THAT DELETS A COLUMN TAKES THE ARRAY OF COLUMNS AND THE LOCATION OF THE COLUMN
 			
 			for(int j = 0; j<columnVOs.length; j++){
 				scoreNum.add(columnVOs[j].getColumnName());
@@ -351,6 +356,20 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		return scoreNum;
 
 		
+	}
+	
+	public void deleteColumn(ColumnVO[] col, int i) throws RemoteException{
+		System.out.println(col[i].getColumnDisplayName());
+		DeleteColumns del = new DeleteColumns();
+		del.setCourseId(col[i].getCourseId());
+		String [] ids = {col[i].getId()};
+		del.setIdsToDelete(ids);
+		del.setOnlyIfEmpty(false);
+		gradebookWSStub.deleteColumns(del);
+		SaveColumns save = new SaveColumns();
+		save.setColumns(col);
+		save.setCourseId(col[i].getCourseId());
+		updateColumns(save);
 	}
 	
 	public ScoreVO[] checkArray(ScoreVO[] scr, ColumnVO[] col){
@@ -453,14 +472,18 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		newCol.setWeight(0);
 		newCol.setDeleted(false);
 		newCol.setExternalGrade(false);
-		
 		columns.add(newCol);
 		ColumnVO[] newColumns = columns.toArray(col);
 		SaveColumns save = new SaveColumns();
 		save.setColumns(newColumns);
 		save.setCourseId(col[0].getCourseId());
 		save.addColumns(newCol);
+<<<<<<< HEAD
 		gradebookWSStub.saveColumns(save);
+=======
+		ColumnVO[] newColumns = columns.toArray(col);
+		updateColumns(save);
+>>>>>>> origin/master
 		return newColumns;
 	}
 	
