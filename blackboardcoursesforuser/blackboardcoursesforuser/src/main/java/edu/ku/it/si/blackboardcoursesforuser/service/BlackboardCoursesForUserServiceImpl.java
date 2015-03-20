@@ -34,6 +34,7 @@ import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.AttemptFilter;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ColumnFilter;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.ColumnVO;
+import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.DeleteColumns;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetAttempts;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradebookColumns;
 import edu.ku.it.si.bbgradebookws.generated.GradebookWSStub.GetGradebookColumnsResponse;
@@ -328,13 +329,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			
 			logger.debug("Course names found for classes " + username + " is enrolled in are " + courseTitles.toString());
 			
-
-
-			columnVOs = createColumn(columnVOs, "delete2"); // LINE THAT ADDS A COOLUMN WITH DESIRED NAME, after adding comment it to change grade to 99!
-=======
-			
-			//columnVOs = createColumn(columnVOs, "Add4"); // LINE THAT ADDS A COOLUMN WITH DESIRED NAME, after adding comment it to change grade to 99!
->>>>>>> origin/master
+			//columnVOs = createColumn(columnVOs, "Add1"); // LINE THAT ADDS A COOLUMN WITH DESIRED NAME, after adding comment it to change grade to 99!
 			scoreVOs = checkArray(scoreVOs, columnVOs);
 			
 			//deleteColumn(columnVOs, 3); // LINE THAT DELETS A COLUMN TAKES THE ARRAY OF COLUMNS AND THE LOCATION OF THE COLUMN
@@ -345,7 +340,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 					if(scoreVOs[k].getColumnId().equals(columnVOs[j].getId()))
 						scoreNum.add(scoreVOs[k].getGrade());
 					if(scoreVOs[k].getGrade() == null)
-						changeGrade(scoreVOs[k], "31");
+						changeGrade(scoreVOs[k], "53");
 				}
 			}
 			updateGrades(scoreVOs, courseIds[0]);
@@ -440,9 +435,12 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		score.setManualScore(Double.parseDouble(grade));
 	}
 	
+	public void updateColumns(SaveColumns save) throws RemoteException{
+		gradebookWSStub.saveColumns(save);
+	}
+	
 	public ColumnVO[] createColumn(ColumnVO[] col, String name) throws RemoteException{
 		ArrayList<ColumnVO> columns = new ArrayList<ColumnVO>();
-		System.out.println(col[4].getColumnDisplayName());
 		for(int i = 0; i<col.length; i++){
 			if(i != 4)
 				columns.add(col[i]);
@@ -477,13 +475,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		SaveColumns save = new SaveColumns();
 		save.setColumns(newColumns);
 		save.setCourseId(col[0].getCourseId());
-		save.addColumns(newCol);
-<<<<<<< HEAD
-		gradebookWSStub.saveColumns(save);
-=======
-		ColumnVO[] newColumns = columns.toArray(col);
 		updateColumns(save);
->>>>>>> origin/master
 		return newColumns;
 	}
 	
