@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import blackboard.persist.KeyNotFoundException;
+import blackboard.persist.PersistenceException;
+
 import edu.ku.it.si.blackboardcoursesforuser.service.BlackboardCoursesForUserService;
 
 /**
@@ -46,8 +49,10 @@ public class BlackboardCoursesForUserController {
 	 * object get and display the course titles
 	 * for the Blackboard user identified by 
 	 * the instance field username.
+	 * @throws PersistenceException 
+	 * @throws KeyNotFoundException 
 	 */
-	public void getBlackboardCoursesForUser() {
+	public void getBlackboardCoursesForUser() throws KeyNotFoundException, PersistenceException {
 		
 		try {
 			

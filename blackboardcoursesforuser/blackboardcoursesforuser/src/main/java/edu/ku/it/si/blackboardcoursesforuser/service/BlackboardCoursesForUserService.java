@@ -6,6 +6,9 @@ package edu.ku.it.si.blackboardcoursesforuser.service;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import blackboard.persist.KeyNotFoundException;
+import blackboard.persist.PersistenceException;
+
 
 
 
@@ -32,10 +35,12 @@ public interface BlackboardCoursesForUserService {
 	 * @param username - Blackboard username for person to get the Courses enrolled in
 	 * @return collection of String objects with each String being a course name
 	 * @throws RemoteException
+	 * @throws PersistenceException 
+	 * @throws KeyNotFoundException 
 	 */
 	public List<String> getBlackboardCoursesForUser(String modulePath, String blackboardServerURL, 
 			String sharedSecret, String vendorId, 
-			String clientProgramId, String username) throws RemoteException;
+			String clientProgramId, String username) throws RemoteException, KeyNotFoundException, PersistenceException;
 	 
 
 }

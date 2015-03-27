@@ -3,6 +3,7 @@ package edu.ku.it.si.blackboardcoursesforuser.service;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.security.auth.callback.Callback;
@@ -20,11 +21,21 @@ import org.apache.rampart.handler.config.OutflowConfiguration;
 import org.apache.ws.security.WSPasswordCallback;
 import org.apache.ws.security.handler.WSHandlerConstants;
 
+import blackboard.data.content.Content;
+import blackboard.data.course.CourseMembership;
+import blackboard.persist.Id;
+import blackboard.persist.KeyNotFoundException;
+import blackboard.persist.PersistenceException;
+import blackboard.persist.course.CourseMembershipDbLoader;
 import edu.ku.it.si.bbcontextws.generated.ContextWSStub;
 import edu.ku.it.si.bbcontextws.generated.ContextWSStub.CourseIdVO;
 import edu.ku.it.si.bbcontextws.generated.ContextWSStub.GetMemberships;
 import edu.ku.it.si.bbcontextws.generated.ContextWSStub.GetMembershipsResponse;
 import edu.ku.it.si.bbcontextws.generated.ContextWSStub.LoginTool;
+import edu.ku.it.si.bbcoursemembership.generated.CourseMembershipWSStub;
+import edu.ku.it.si.bbcoursemembership.generated.CourseMembershipWSStub.CourseMembershipVO;
+import edu.ku.it.si.bbcoursemembership.generated.CourseMembershipWSStub.CourseRoleFilter;
+import edu.ku.it.si.bbcoursemembership.generated.CourseMembershipWSStub.GetCourseRoles;
 import edu.ku.it.si.bbcoursews.generated.CourseWSStub;
 import edu.ku.it.si.bbcoursews.generated.CourseWSStub.CourseFilter;
 import edu.ku.it.si.bbcoursews.generated.CourseWSStub.CourseVO;
@@ -59,11 +70,12 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 
 	private static final Logger logger = Logger.getLogger(BlackboardCoursesForUserServiceImpl.class.getName() );
 	GradebookWSStub gradebookWSStub;
+	CourseMembershipWSStub courseMembershipWSStub;
 
 	@Override
 	public List<String> getBlackboardCoursesForUser(String modulePath, String blackboardServerURL,
 			String sharedSecret, String vendorId, String clientProgramId, String username)
-			throws RemoteException {
+			throws RemoteException, KeyNotFoundException, PersistenceException {
 		
 		List<String> courseTitles = new ArrayList<String>();
 		List<String> scoreNum = new ArrayList<String>();
@@ -213,7 +225,22 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 				i++;
 				
 			}
-			
+			CourseMembership courseMembership = new CourseMembership();
+			Id courseID = new Id();
+			System.out.println(courseID.toString());
+			/*List <CourseMembership> cmlist = CourseMembershipDbLoader.Default.getInstance().loadByCourseIdAndRole(courseID, CourseMembership.Role.STUDENT, null, true);
+			Iterator<CourseMembership> students = cmlist.iterator();
+			students = cmlist.iterator();
+			String currentUserID = "";
+			while(students.hasNext()){
+				CourseMembership cm = (CourseMembership) students.next();
+				currentUserID = cm.getUserId().toString();	
+				String lastName = cm.getUser().getFamilyName();
+				String external = cm.getUserId().toExternalString();
+				String[] parts = external.split("_");
+				String externalParsed = parts[1];
+				System.out.println("<option value='" + externalParsed + "'>" + lastName + "</option>");
+			}*/
 			
 			/*
 			 * Create a GetCourse object that is used
@@ -322,6 +349,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			ColumnVO [] columnVOs = getGradebookColumnsResponse.get_return();
 			
 			
+			
 			for (CourseVO courseVO : courseVOs) {
 				
 				courseTitles.add( courseVO.getName() );
@@ -344,6 +372,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 				}
 			}
 			updateGrades(scoreVOs, courseIds[0]);
+			
 		}
 		
 		

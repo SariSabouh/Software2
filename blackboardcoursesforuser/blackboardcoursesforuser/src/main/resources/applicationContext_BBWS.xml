@@ -54,6 +54,16 @@
 			<value>Gradebook.WS:saveGradingSchemas</value>
 			<value>Gradebook.WS:getGradingSchemas</value>
 			<value>Gradebook.WS:deleteGradingSchemas</value>
+			<value>Gradebook.WS:deleteAttempts</value>
+			<value>CourseMembership.WS:deleteCourseMembership</value>
+			<value>CourseMembership.WS:deleteGroupMembership</value>
+			<value>CourseMembership.WS:getCourseMembership</value>
+			<value>CourseMembership.WS:getCourseRoles</value>
+			<value>CourseMembership.WS:getGroupMembership</value>
+			<value>CourseMembership.WS:getServerVersion</value>
+			<value>CourseMembership.WS:initializeCourseMembershipWS</value>
+			<value>CourseMembership.WS:saveCourseMembership</value>
+			<value>CourseMembership.WS:saveGroupMembership</value>
    		</list>
    	</property>
    	

@@ -3,6 +3,9 @@ package edu.ku.it.si.blackboardcoursesforuser.app;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import blackboard.persist.KeyNotFoundException;
+import blackboard.persist.PersistenceException;
+
 import edu.ku.it.si.blackboardcoursesforuser.controller.BlackboardCoursesForUserController;
 
 
@@ -25,8 +28,10 @@ public class BlackboardCoursesForUserApp {
 		
 		/**
 		 * @param args
+		 * @throws PersistenceException 
+		 * @throws KeyNotFoundException 
 		 */
-		public static void main(String[] args) {
+		public static void main(String[] args) throws KeyNotFoundException, PersistenceException {
 
 					
 			BlackboardCoursesForUserApp app = new BlackboardCoursesForUserApp();
@@ -35,7 +40,7 @@ public class BlackboardCoursesForUserApp {
 		
 		}
 
-		private void run() {
+		private void run() throws KeyNotFoundException, PersistenceException {
 			
 			
 			blackboardCoursesForUserController = (BlackboardCoursesForUserController) ctx.getBean("blackboardCoursesForUserController");

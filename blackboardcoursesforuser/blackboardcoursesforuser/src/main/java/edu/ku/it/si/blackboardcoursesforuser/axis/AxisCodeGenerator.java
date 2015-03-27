@@ -23,9 +23,9 @@ public class AxisCodeGenerator {
 		WSDL2Code.main(new String[] { 
 				"-S", "src/main/java",
 				"-R", "src/main/resources/META-INF",
-				"-p", "edu.ku.it.si.bbgradebookws.generated",
+				"-p", "edu.ku.it.si.bbcoursemembership.generated",
 				"-d", "adb",
-				"-uri", "src/main/resources/gradebookWS.wsdl" });
+				"-uri", "src/main/resources/courseMembershipWS.wsdl" });
 		
 		System.out.println("Done!");
 	}
