@@ -226,7 +226,8 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 				
 			}
 			CourseMembership courseMembership = new CourseMembership();
-			Id courseID = new Id();
+			Content cn = new Content();
+			Id courseID = cn.getCourseId();
 			System.out.println(courseID.toString());
 			/*List <CourseMembership> cmlist = CourseMembershipDbLoader.Default.getInstance().loadByCourseIdAndRole(courseID, CourseMembership.Role.STUDENT, null, true);
 			Iterator<CourseMembership> students = cmlist.iterator();
