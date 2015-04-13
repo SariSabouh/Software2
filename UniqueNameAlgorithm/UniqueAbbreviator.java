@@ -16,13 +16,13 @@ public class UniqueAbbreviator
 	private String parseFirstName(String name, int delimiterIndex)
 	{
 		String fName = name.substring(delimiterIndex+1);
-		return fName.replace(' ', '');
+		return fName.replace(' ', '\0');
 	}
 	
 	private String parseLastName(String name, int delimiterIndex)
 	{
 		String lName = name.substring(0, delimiterIndex);
-		return lName.replace(' ', '');
+		return lName.replace(' ', '\0');
 	}
 	
 	private void makeAbbreviatedRoster()
@@ -30,10 +30,12 @@ public class UniqueAbbreviator
 		abbreviatedRoster = new Student[roster.length];
 		
 		for (int i = 0; i < abbreviatedRoster.length; i++)
-			abbreviatedRoster[i] = new Student(roster[i].getFirstName().substring(0, delimiterIndex), roster[i].getLastName());
+			abbreviatedRoster[i] = new Student(roster[i].getFirstName().substring(0,1), roster[i].getLastName());
 		
 		int[] problematicIndices = findNonUniqueIndices();
 		int duplicateNameGroupCount = countDuplicateNames(problematicIndices);
+		
+		Student[] fixedOffenders = new Student[problematicIndices.length];
 		
 		int currentIndex = 0;
 		
@@ -50,13 +52,17 @@ public class UniqueAbbreviator
 			group.add(roster[problematicIndices[currentIndex]]);
 			currentIndex++;
 			
-			for (int j = 0; j < group.size(); j++)
+			LinkedList<Student> fixedGroup = getUniqueNameList(group);
+			for (int j = currentIndex-fixedGroup.size()+1; j < currentIndex+1; j++)
 			{
-				
+				fixedOffenders[j] = new Student(fixedGroup.get(j).getFirstName(), fixedGroup.get(j).getLastName());
 			}
 		}
 		
-		
+		for (int i = 0; i < fixedOffenders.length; i++)
+		{
+			abbreviatedRoster[problematicIndices[i]] = new Student(fixedOffenders[i].getFirstName(), fixedOffenders[i].getLastName());
+		}
 	}
 	
 	private int[] findNonUniqueIndices()
@@ -83,7 +89,7 @@ public class UniqueAbbreviator
 			if (i < roster.length-1)
 			{
 				nextLName = roster[i+1].getLastName();
-				nextFirstInitial = roster[i+1].getFirstName().substring(0,1)
+				nextFirstInitial = roster[i+1].getFirstName().substring(0,1);
 			}
 			else
 			{
@@ -119,9 +125,9 @@ public class UniqueAbbreviator
 		{
 			if (i < indicesToCheck.length-1)
 			{
-				if (String.valueOf(roster[indicesToCheck[i]].getLastName) == String.valueOf(roster[indicesToCheck[i+1]].getLastName))
+				if (String.valueOf(roster[indicesToCheck[i]].getLastName()) == String.valueOf(roster[indicesToCheck[i+1]].getLastName()))
 				{
-					if (String.valueOf(roster[indicesToCheck[i]].getFirstName.substring(0,1)) == String.valueOf(roster[indicesToCheck[i+1]].getFirstName.substring(0,1)))
+					if (String.valueOf(roster[indicesToCheck[i]].getFirstName().substring(0,1)) == String.valueOf(roster[indicesToCheck[i+1]].getFirstName().substring(0,1)))
 						sameGroup = true;
 				}
 			}
@@ -130,14 +136,19 @@ public class UniqueAbbreviator
 			
 			if (i > 0)
 			{
-				if (String.valueOf(roster[indicesToCheck[i]].getLastName) != String.valueOf(roster[indicesToCheck[i-1]].getLastName))
+				if (String.valueOf(roster[indicesToCheck[i]].getLastName()) != String.valueOf(roster[indicesToCheck[i-1]].getLastName()))
 					counter++;
-				else if (String.valueOf(roster[indicesToCheck[i]].getLastName) != String.valueOf(roster[indicesToCheck[i-1]].getLastName))
+				else if (String.valueOf(roster[indicesToCheck[i]].getLastName()) != String.valueOf(roster[indicesToCheck[i-1]].getLastName()))
 					counter++;
 			}
 		}
 		
 		return counter;
+	}
+	
+	private LinkedList<Student> getUniqueNameList(LinkedList<Student> rawList)
+	{
+		return null;
 	}
 	
 	public void populateRoster(String[] nameList)
@@ -157,7 +168,7 @@ public class UniqueAbbreviator
 			//Assume that all names passed in will have surname and given name separated by a comma
 			//Expected format is lastName, firstName
 			int dIndex = nameList[i].indexOf(",");
-			Student[i] = new Student(parseFirstName(nameList[i], dIndex), parseLastName(nameList[i], dIndex));
+			roster[i] = new Student(parseFirstName(nameList[i], dIndex), parseLastName(nameList[i], dIndex));
 		}
 		
 		Arrays.sort(roster);
