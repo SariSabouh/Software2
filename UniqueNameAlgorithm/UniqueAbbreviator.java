@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class UniqueAbbreviator
 {
@@ -14,19 +15,48 @@ public class UniqueAbbreviator
 	
 	private String parseFirstName(String name, int delimiterIndex)
 	{
-		String fName = name.substring(delimiterIndex+1, name.length()-1);
+		String fName = name.substring(delimiterIndex+1);
 		return fName.replace(' ', '');
 	}
 	
 	private String parseLastName(String name, int delimiterIndex)
 	{
-		String lName = name.substring(0, delimiterIndex-1);
+		String lName = name.substring(0, delimiterIndex);
 		return lName.replace(' ', '');
 	}
 	
 	private void makeAbbreviatedRoster()
 	{
-		int[] indices = findNonUniqueIndices();
+		abbreviatedRoster = new Student[roster.length];
+		
+		for (int i = 0; i < abbreviatedRoster.length; i++)
+			abbreviatedRoster[i] = new Student(roster[i].getFirstName().substring(0, delimiterIndex), roster[i].getLastName());
+		
+		int[] problematicIndices = findNonUniqueIndices();
+		int duplicateNameGroupCount = countDuplicateNames(problematicIndices);
+		
+		int currentIndex = 0;
+		
+		for (int i = 0; i < duplicateNameGroupCount; i++)
+		{
+			LinkedList<Student> group = new LinkedList<Student>();
+			
+			while ((String.valueOf(roster[problematicIndices[currentIndex]].getLastName()) == String.valueOf(roster[problematicIndices[currentIndex+1]].getLastName())) && (String.valueOf(roster[problematicIndices[currentIndex]].getFirstName().substring(0,1)) == String.valueOf(roster[problematicIndices[currentIndex+1]].getFirstName().substring(0,1))))
+			{
+				group.add(roster[problematicIndices[currentIndex]]);
+				currentIndex++;
+			}
+			
+			group.add(roster[problematicIndices[currentIndex]]);
+			currentIndex++;
+			
+			for (int j = 0; j < group.size(); j++)
+			{
+				
+			}
+		}
+		
+		
 	}
 	
 	private int[] findNonUniqueIndices()
@@ -81,6 +111,35 @@ public class UniqueAbbreviator
 		return compactIndexArray;		
 	}
 	
+	private int countDuplicateNames(int[] indicesToCheck)
+	{
+		int counter = 0;
+		boolean sameGroup = false;
+		for (int i = 0; i < indicesToCheck.length; i++)
+		{
+			if (i < indicesToCheck.length-1)
+			{
+				if (String.valueOf(roster[indicesToCheck[i]].getLastName) == String.valueOf(roster[indicesToCheck[i+1]].getLastName))
+				{
+					if (String.valueOf(roster[indicesToCheck[i]].getFirstName.substring(0,1)) == String.valueOf(roster[indicesToCheck[i+1]].getFirstName.substring(0,1)))
+						sameGroup = true;
+				}
+			}
+			else
+				counter++;
+			
+			if (i > 0)
+			{
+				if (String.valueOf(roster[indicesToCheck[i]].getLastName) != String.valueOf(roster[indicesToCheck[i-1]].getLastName))
+					counter++;
+				else if (String.valueOf(roster[indicesToCheck[i]].getLastName) != String.valueOf(roster[indicesToCheck[i-1]].getLastName))
+					counter++;
+			}
+		}
+		
+		return counter;
+	}
+	
 	public void populateRoster(String[] nameList)
 	{
 		if (roster == null)
@@ -104,7 +163,7 @@ public class UniqueAbbreviator
 		Arrays.sort(roster);
 	}
 	
-	public void getAbbreviatedRoster()
+	public Student[] getAbbreviatedRoster()
 	{
 		return abbreviatedRoster;
 	}
