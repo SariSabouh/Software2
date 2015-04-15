@@ -3,7 +3,6 @@ package edu.ku.it.si.blackboardcoursesforuser.service;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.security.auth.callback.Callback;
@@ -26,16 +25,11 @@ import blackboard.data.course.CourseMembership;
 import blackboard.persist.Id;
 import blackboard.persist.KeyNotFoundException;
 import blackboard.persist.PersistenceException;
-import blackboard.persist.course.CourseMembershipDbLoader;
 import edu.ku.it.si.bbcontextws.generated.ContextWSStub;
 import edu.ku.it.si.bbcontextws.generated.ContextWSStub.CourseIdVO;
 import edu.ku.it.si.bbcontextws.generated.ContextWSStub.GetMemberships;
 import edu.ku.it.si.bbcontextws.generated.ContextWSStub.GetMembershipsResponse;
 import edu.ku.it.si.bbcontextws.generated.ContextWSStub.LoginTool;
-import edu.ku.it.si.bbcoursemembership.generated.CourseMembershipWSStub;
-import edu.ku.it.si.bbcoursemembership.generated.CourseMembershipWSStub.CourseMembershipVO;
-import edu.ku.it.si.bbcoursemembership.generated.CourseMembershipWSStub.CourseRoleFilter;
-import edu.ku.it.si.bbcoursemembership.generated.CourseMembershipWSStub.GetCourseRoles;
 import edu.ku.it.si.bbcoursews.generated.CourseWSStub;
 import edu.ku.it.si.bbcoursews.generated.CourseWSStub.CourseFilter;
 import edu.ku.it.si.bbcoursews.generated.CourseWSStub.CourseVO;
@@ -70,7 +64,6 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 
 	private static final Logger logger = Logger.getLogger(BlackboardCoursesForUserServiceImpl.class.getName() );
 	GradebookWSStub gradebookWSStub;
-	CourseMembershipWSStub courseMembershipWSStub;
 
 	@Override
 	public List<String> getBlackboardCoursesForUser(String modulePath, String blackboardServerURL,
@@ -225,10 +218,8 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 				i++;
 				
 			}
-			CourseMembership courseMembership = new CourseMembership();
-			Content cn = new Content();
-			Id courseID = cn.getCourseId();
-			System.out.println(courseID.toString());
+//			Id courseID = 
+//			System.out.println(courseID.toString());
 			/*List <CourseMembership> cmlist = CourseMembershipDbLoader.Default.getInstance().loadByCourseIdAndRole(courseID, CourseMembership.Role.STUDENT, null, true);
 			Iterator<CourseMembership> students = cmlist.iterator();
 			students = cmlist.iterator();
