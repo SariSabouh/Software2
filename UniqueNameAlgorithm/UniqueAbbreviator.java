@@ -5,6 +5,7 @@ public class UniqueAbbreviator
 {
 	private Student[] roster;
 	private Student[] abbreviatedRoster;
+	private final int MAX_NAME_LENGTH = 16;
 	
 	public UniqueAbbreviator() {	}
 	
@@ -16,15 +17,24 @@ public class UniqueAbbreviator
 	private String parseFirstName(String name, int delimiterIndex)
 	{
 		String fName = name.substring(delimiterIndex+1);
-		return fName.replace(' ', '\0');
+		fName = fName.replace(' ', '\0');
+		if (fName.length() > MAX_NAME_LENGTH)
+			return fName.substring(0,MAX_NAME_LENGTH);
+		else
+			return fName;
 	}
 	
 	private String parseLastName(String name, int delimiterIndex)
 	{
 		String lName = name.substring(0, delimiterIndex);
-		return lName.replace(' ', '\0');
+		lName = lName.replace(' ', '\0');
+		if (lName.length() > MAX_NAME_LENGTH)
+			return lName.substring(0,MAX_NAME_LENGTH);
+		else
+			return lName;
 	}
 	
+	//Contains the majority of what happens for the abbreviated roster creation
 	private void makeAbbreviatedRoster()
 	{
 		abbreviatedRoster = new Student[roster.length];
@@ -53,9 +63,11 @@ public class UniqueAbbreviator
 			currentIndex++;
 			
 			LinkedList<Student> fixedGroup = getUniqueNameList(group);
+			int fixedGroupIndex = 0;
 			for (int j = currentIndex-fixedGroup.size()+1; j < currentIndex+1; j++)
 			{
-				fixedOffenders[j] = new Student(fixedGroup.get(j).getFirstName(), fixedGroup.get(j).getLastName());
+				fixedOffenders[j] = new Student(fixedGroup.get(fixedGroupIndex).getFirstName(), fixedGroup.get(fixedGroupIndex).getLastName());
+				fixedGroupIndex++;
 			}
 		}
 		
@@ -65,6 +77,7 @@ public class UniqueAbbreviator
 		}
 	}
 	
+	//Returns an array containing the indices which reference all ambiguous names in the roster array
 	private int[] findNonUniqueIndices()
 	{
 		int[] nonUnqLocs = new int[roster.length];
@@ -117,6 +130,8 @@ public class UniqueAbbreviator
 		return compactIndexArray;		
 	}
 	
+	//Counts the number of GROUPS of (not individual) ambiguous names
+	//A group is defined such that all Students have the same first initial and last name
 	private int countDuplicateNames(int[] indicesToCheck)
 	{
 		int counter = 0;
@@ -146,6 +161,8 @@ public class UniqueAbbreviator
 		return counter;
 	}
 	
+	//Takes a group of non-unique names (where all in a group have the same last name and first initial)
+	//If the first 3 characters of the first name match another within the group, just display whole first name
 	private LinkedList<Student> getUniqueNameList(LinkedList<Student> rawList)
 	{
 		LinkedList<Student> resultList = new LinkedList<Student>(); 
@@ -171,6 +188,8 @@ public class UniqueAbbreviator
 		return resultList;
 	}
 	
+	//Put the raw (unabbreviated) names in the roster array
+	//Can be called as a "setter" of sorts
 	public void populateRoster(String[] nameList)
 	{
 		if (roster == null)
