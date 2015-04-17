@@ -16,6 +16,8 @@ public class UniqueAbbreviator
 	
 	private String parseFirstName(String name, int delimiterIndex)
 	{
+		System.out.println(delimiterIndex);
+		System.out.println(name.length());
 		String fName = name.substring(delimiterIndex+1);
 		fName = fName.replace(' ', '\0');
 		if (fName.length() > MAX_NAME_LENGTH)
@@ -176,7 +178,7 @@ public class UniqueAbbreviator
 				}
 				else
 				{
-					while(rawList.get(k).getFirstName().substring(0,3).equals(rawList.get(k+1).getFirstName().substring(0,3)))
+					while(rawList.get(k).getFirstName().substring(0,3).equals(rawList.get(k+1).getFirstName().substring(0,3)) && k < rawList.size()-2)
 					{
 						resultList.add(new Student( rawList.get(k).getFirstName(), rawList.get(k).getLastName()));
 						k++;
@@ -207,10 +209,14 @@ public class UniqueAbbreviator
 			//Assume that all names passed in will have surname and given name separated by a comma
 			//Expected format is lastName, firstName
 			int dIndex = nameList[i].indexOf(",");
+			if (dIndex < 0)
+				dIndex = nameList[i].indexOf(" ");
 			roster[i] = new Student(parseFirstName(nameList[i], dIndex), parseLastName(nameList[i], dIndex));
 		}
 		
 		Arrays.sort(roster);
+		
+		makeAbbreviatedRoster();
 	}
 	
 	public Student[] getAbbreviatedRoster()
