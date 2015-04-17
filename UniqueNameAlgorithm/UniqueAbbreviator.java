@@ -47,6 +47,8 @@ public class UniqueAbbreviator
 		int[] problematicIndices = findNonUniqueIndices();
 		int duplicateNameGroupCount = countDuplicateNames(problematicIndices);
 		
+		System.out.println("Problematic indices length: "+problematicIndices.length);
+		
 		Student[] fixedOffenders = new Student[problematicIndices.length];
 		
 		int currentIndex = 0;
@@ -55,25 +57,36 @@ public class UniqueAbbreviator
 		{
 			LinkedList<Student> group = new LinkedList<Student>();
 			
-			System.out.println(currentIndex);
+			System.out.println("current index "+currentIndex);
 			
 			while (roster[problematicIndices[currentIndex]].getLastName().equals(roster[problematicIndices[currentIndex+1]].getLastName()) && (roster[problematicIndices[currentIndex]].getFirstName().substring(0,1).equals(roster[problematicIndices[currentIndex+1]].getFirstName().substring(0,1))))
 			{
 				group.add(roster[problematicIndices[currentIndex]]);
 				if (currentIndex < problematicIndices.length-2)
+				{
 					currentIndex++;
+				}
 				else
+				{
 					break;
+				}
 			}
+			
+			
 			
 			group.add(roster[problematicIndices[currentIndex]]);
 			currentIndex++;
 			
 			LinkedList<Student> fixedGroup = getUniqueNameList(group);
-			int fixedGroupIndex = 0;
-			for (int j = currentIndex-fixedGroup.size()-1; j < currentIndex+1; j++)
+			for (int m = 0; m < fixedGroup.size(); m++)
 			{
-				System.out.println()
+				System.out.println("fixed group name "+fixedGroup.get(m).getFirstName());
+			}
+			
+			int fixedGroupIndex = 0;
+			for (int j = currentIndex-fixedGroup.size(); j < currentIndex; j++)
+			{
+				System.out.println("fixedGroupIndex "+fixedGroupIndex);
 				fixedOffenders[j] = new Student(fixedGroup.get(fixedGroupIndex).getFirstName(), fixedGroup.get(fixedGroupIndex).getLastName());
 				fixedGroupIndex++;
 			}
@@ -81,6 +94,8 @@ public class UniqueAbbreviator
 		
 		for (int i = 0; i < fixedOffenders.length; i++)
 		{
+			System.out.println("Iteration "+i);
+			System.out.println(fixedOffenders[i].getFirstName());
 			//System.out.println(fixedOffenders[i].getFirstName() + " " + fixedOffenders[i].getLastName());
 			abbreviatedRoster[problematicIndices[i]] = new Student(fixedOffenders[i].getFirstName(), fixedOffenders[i].getLastName());
 		}
@@ -139,7 +154,7 @@ public class UniqueAbbreviator
 		return compactIndexArray;		
 	}
 	
-	//Counts the number of GROUPS of (not individual) ambiguous names
+	//Counts the number of GROUPS (not individual) of ambiguous names
 	//A group is defined such that all Students have the same first initial and last name
 	private int countDuplicateNames(int[] indicesToCheck)
 	{
@@ -167,6 +182,8 @@ public class UniqueAbbreviator
 			}
 		}
 		
+		System.out.println("The count of offending groups is "+counter);
+		
 		return counter;
 	}
 	
@@ -174,25 +191,80 @@ public class UniqueAbbreviator
 	//If the first 3 characters of the first name match another within the group, just display whole first name
 	private LinkedList<Student> getUniqueNameList(LinkedList<Student> rawList)
 	{
+		System.out.println("The size of the raw name list is "+rawList.size());
 		LinkedList<Student> resultList = new LinkedList<Student>(); 
 		
-			boolean stillConflicting = false;
-			for (int k = 0; k<rawList.size()-1 ; k++)
+		boolean stillConflicting = false;
+		/*for (int k = 0; k<rawList.size()-1 ; k++)
+		{
+			if(!rawList.get(k).getFirstName().substring(0,3).equals(rawList.get(k+1).getFirstName().substring(0,3)))
 			{
-				if(!rawList.get(k).getFirstName().substring(0,3).equals(rawList.get(k+1).getFirstName().substring(0,3)))
+				resultList.add(new Student(rawList.get(k).getFirstName().substring(0,3), rawList.get(k).getLastName()));
+			}
+			else
+			{
+				while(rawList.get(k).getFirstName().substring(0,3).equals(rawList.get(k+1).getFirstName().substring(0,3)) && k < rawList.size()-2)
 				{
-					resultList.add(new Student(rawList.get(k).getFirstName().substring(0,3), rawList.get(k).getLastName()));
+					resultList.add(new Student( rawList.get(k).getFirstName(), rawList.get(k).getLastName()));
+					k++;
 				}
-				else
+			}
+			
+		}*/
+		
+		for (int k = 0; k < rawList.size()-1; k++)
+		{
+			//need to find a way to make the last one still get added
+			if (k == rawList.size()-2)
+			{
+				if (k > 0)
 				{
-					while(rawList.get(k).getFirstName().substring(0,3).equals(rawList.get(k+1).getFirstName().substring(0,3)) && k < rawList.size()-2)
+					if (rawList.get(k).getFirstName().substring(0,3).equals(rawList.get(k-1).getFirstName().substring(0,3)))
+						resultList.add(new Student(rawList.get(k).getFirstName(), rawList.get(k).getLastName()));
+					else
+						resultList.add(new Student(rawList.get(k).getFirstName().substring(0,3), rawList.get(k).getLastName()));
+					
+					if (rawList.get(k).getFirstName().substring(0,3).equals(rawList.get(k+1).getFirstName().substring(0,3)))
+						resultList.add(new Student(rawList.get(k+1).getFirstName(), rawList.get(k+1).getLastName()));
+					else
+						resultList.add(new Student(rawList.get(k+1).getFirstName().substring(0,3), rawList.get(k+1).getLastName()));
+				}
+				else if (k == 0)
+				{
+					if (rawList.get(k).getFirstName().substring(0,3).equals(rawList.get(k+1).getFirstName().substring(0,3)))
 					{
-						resultList.add(new Student( rawList.get(k).getFirstName(), rawList.get(k).getLastName()));
-						k++;
+						resultList.add(new Student(rawList.get(k).getFirstName(), rawList.get(k).getLastName()));
+						resultList.add(new Student(rawList.get(k+1).getFirstName(), rawList.get(k+1).getLastName()));
 					}
+					else
+					{
+						resultList.add(new Student(rawList.get(k).getFirstName().substring(0,3), rawList.get(k).getLastName()));
+						System.out.println(rawList.get(k).getFirstName().substring(0,3));
+						resultList.add(new Student(rawList.get(k+1).getFirstName().substring(0,3), rawList.get(k+1).getLastName()));
+						System.out.println(rawList.get(k+1).getFirstName().substring(0,3));
+					}
+					break;
 				}
 				
+				
 			}
+			else if (rawList.get(k).getFirstName().substring(0,3).equals(rawList.get(k+1).getFirstName().substring(0,3)))
+				resultList.add(new Student(rawList.get(k).getFirstName(), rawList.get(k).getLastName()));
+			else
+			{
+				if (k > 0)
+				{
+					if (rawList.get(k).getFirstName().substring(0,3).equals(rawList.get(k-1).getFirstName().substring(0,3)))
+						resultList.add(new Student(rawList.get(k).getFirstName(), rawList.get(k).getLastName()));
+					else
+						resultList.add(new Student(rawList.get(k).getFirstName().substring(0,3), rawList.get(k).getLastName()));
+				}
+				else
+					resultList.add(new Student(rawList.get(k).getFirstName().substring(0,3), rawList.get(k).getLastName()));
+			}
+		}
+		
+		System.out.println("The size of the unique name list is "+resultList.size());
 			
 		return resultList;
 	}
