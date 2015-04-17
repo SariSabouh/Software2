@@ -55,10 +55,15 @@ public class UniqueAbbreviator
 		{
 			LinkedList<Student> group = new LinkedList<Student>();
 			
+			System.out.println(currentIndex);
+			
 			while (roster[problematicIndices[currentIndex]].getLastName().equals(roster[problematicIndices[currentIndex+1]].getLastName()) && (roster[problematicIndices[currentIndex]].getFirstName().substring(0,1).equals(roster[problematicIndices[currentIndex+1]].getFirstName().substring(0,1))))
 			{
 				group.add(roster[problematicIndices[currentIndex]]);
-				currentIndex++;
+				if (currentIndex < problematicIndices.length-2)
+					currentIndex++;
+				else
+					break;
 			}
 			
 			group.add(roster[problematicIndices[currentIndex]]);
@@ -66,8 +71,9 @@ public class UniqueAbbreviator
 			
 			LinkedList<Student> fixedGroup = getUniqueNameList(group);
 			int fixedGroupIndex = 0;
-			for (int j = currentIndex-fixedGroup.size()+1; j < currentIndex+1; j++)
+			for (int j = currentIndex-fixedGroup.size()-1; j < currentIndex+1; j++)
 			{
+				System.out.println()
 				fixedOffenders[j] = new Student(fixedGroup.get(fixedGroupIndex).getFirstName(), fixedGroup.get(fixedGroupIndex).getLastName());
 				fixedGroupIndex++;
 			}
@@ -75,6 +81,7 @@ public class UniqueAbbreviator
 		
 		for (int i = 0; i < fixedOffenders.length; i++)
 		{
+			//System.out.println(fixedOffenders[i].getFirstName() + " " + fixedOffenders[i].getLastName());
 			abbreviatedRoster[problematicIndices[i]] = new Student(fixedOffenders[i].getFirstName(), fixedOffenders[i].getLastName());
 		}
 	}
