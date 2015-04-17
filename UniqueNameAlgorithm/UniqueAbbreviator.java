@@ -43,7 +43,7 @@ public class UniqueAbbreviator
 		{
 			LinkedList<Student> group = new LinkedList<Student>();
 			
-			while ((String.valueOf(roster[problematicIndices[currentIndex]].getLastName()) == String.valueOf(roster[problematicIndices[currentIndex+1]].getLastName())) && (String.valueOf(roster[problematicIndices[currentIndex]].getFirstName().substring(0,1)) == String.valueOf(roster[problematicIndices[currentIndex+1]].getFirstName().substring(0,1))))
+			while (roster[problematicIndices[currentIndex]].getLastName().equals(roster[problematicIndices[currentIndex+1]].getLastName()) && (roster[problematicIndices[currentIndex]].getFirstName().substring(0,1).equals(roster[problematicIndices[currentIndex+1]].getFirstName().substring(0,1))))
 			{
 				group.add(roster[problematicIndices[currentIndex]]);
 				currentIndex++;
@@ -97,13 +97,13 @@ public class UniqueAbbreviator
 				nextFirstInitial = "";
 			}
 			
-			if ((String.valueOf(currentLName) == String.valueOf(nextLName)) && (String.valueOf(currentFirstInitial) == String.valueOf(nextFirstInitial)))
+			if (currentLName.equals(nextLName) && currentFirstInitial.equals(nextFirstInitial))
 			{
 				nonUnqLocs[nonUniqueCounter] = i;
 				nonUniqueCounter++;
 			}
 			
-			else if (String.valueOf(currentLName) == String.valueOf(prevLName) && (String.valueOf(currentFirstInitial) == String.valueOf(prevFirstInitial)))
+			else if (currentLName.equals(prevLName) && currentFirstInitial.equals(prevFirstInitial))
 			{
 				nonUnqLocs[nonUniqueCounter] = i;
 				nonUniqueCounter++;
@@ -125,9 +125,9 @@ public class UniqueAbbreviator
 		{
 			if (i < indicesToCheck.length-1)
 			{
-				if (String.valueOf(roster[indicesToCheck[i]].getLastName()) == String.valueOf(roster[indicesToCheck[i+1]].getLastName()))
+				if (roster[indicesToCheck[i]].getLastName().equals(roster[indicesToCheck[i+1]].getLastName()))
 				{
-					if (String.valueOf(roster[indicesToCheck[i]].getFirstName().substring(0,1)) == String.valueOf(roster[indicesToCheck[i+1]].getFirstName().substring(0,1)))
+					if (roster[indicesToCheck[i]].getFirstName().substring(0,1).equals(roster[indicesToCheck[i+1]].getFirstName().substring(0,1)))
 						sameGroup = true;
 				}
 			}
@@ -136,9 +136,9 @@ public class UniqueAbbreviator
 			
 			if (i > 0)
 			{
-				if (String.valueOf(roster[indicesToCheck[i]].getLastName()) != String.valueOf(roster[indicesToCheck[i-1]].getLastName()))
+				if ( !roster[indicesToCheck[i]].getLastName().equals(roster[indicesToCheck[i-1]].getLastName()))
 					counter++;
-				else if (String.valueOf(roster[indicesToCheck[i]].getLastName()) != String.valueOf(roster[indicesToCheck[i-1]].getLastName()))
+				else if ( !roster[indicesToCheck[i]].getLastName().equals(roster[indicesToCheck[i-1]].getLastName()))
 					counter++;
 			}
 		}
@@ -148,7 +148,27 @@ public class UniqueAbbreviator
 	
 	private LinkedList<Student> getUniqueNameList(LinkedList<Student> rawList)
 	{
-		return null;
+		LinkedList<Student> resultList = new LinkedList<Student>(); 
+		
+			boolean stillConflicting = false;
+			for (int k = 0; k<rawList.size()-1 ; k++)
+			{
+				if(!rawList.get(k).getFirstName().substring(0,3).equals(rawList.get(k+1).getFirstName().substring(0,3)))
+				{
+					resultList.add(new Student(rawList.get(k).getFirstName().substring(0,3), rawList.get(k).getLastName()));
+				}
+				else
+				{
+					while(rawList.get(k).getFirstName().substring(0,3).equals(rawList.get(k+1).getFirstName().substring(0,3)))
+					{
+						resultList.add(new Student( rawList.get(k).getFirstName(), rawList.get(k).getLastName()));
+						k++;
+					}
+				}
+				
+			}
+			
+		return resultList;
 	}
 	
 	public void populateRoster(String[] nameList)
