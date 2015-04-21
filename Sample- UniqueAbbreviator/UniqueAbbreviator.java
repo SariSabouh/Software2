@@ -9,7 +9,7 @@ public class UniqueAbbreviator
 		Arrays.sort(sArray);
 		
 		attemptToGetUniqueNamesWithFirstThreeLettersOfFirstName(sArray);
-		generateAbbreviatedNameWithCompleteFirstName(sArray);
+		generateAbbreviatedNameWithMaxLengthFirstName(sArray);
 		
 		for (int i=0; i< sArray.length; i++)
 		{
@@ -24,22 +24,22 @@ public class UniqueAbbreviator
 		{
 			while(arr[i].getAbbreviatedName().equals(arr[i+1].getAbbreviatedName()) && i< arr.length -2)
 			{
-				arr[i].setAbbreviatedName(arr[i].getFirstName().substring(0,3) + arr[i].getLastName());
-				arr[i+1].setAbbreviatedName(arr[i+1].getFirstName().substring(0,3) + arr[i+1].getLastName());
+				arr[i].setAbbreviatedName(arr[i].getFirstName().substring(0,3) + arr[i].getLastNameWithAtMostSpecifiedLength());
+				arr[i+1].setAbbreviatedName(arr[i+1].getFirstName().substring(0,3) + arr[i+1].getLastNameWithAtMostSpecifiedLength());
 				i++;
 			}
 			
 		}
 	}
 	
-	public void generateAbbreviatedNameWithCompleteFirstName(Student [] arr)
+	public void generateAbbreviatedNameWithMaxLengthFirstName(Student [] arr)
 	{
 		for (int i =0; i<arr.length -1; i++)
 		{
 			while(arr[i].getAbbreviatedName().equals(arr[i+1].getAbbreviatedName()) && i< arr.length -2)
 			{
-				arr[i].setAbbreviatedName(arr[i].getFirstName() + arr[i].getLastName());
-				arr[i+1].setAbbreviatedName(arr[i+1].getFirstName() + arr[i+1].getLastName());
+				arr[i].setAbbreviatedName(arr[i].getFirstNameWithAtMostSpecifiedLength() + arr[i].getLastNameWithAtMostSpecifiedLength());
+				arr[i+1].setAbbreviatedName(arr[i+1].getFirstNameWithAtMostSpecifiedLength() + arr[i+1].getLastNameWithAtMostSpecifiedLength());
 				i++;
 			}
 		}
