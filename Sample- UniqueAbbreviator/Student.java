@@ -3,6 +3,7 @@ public class Student implements Comparable <Student>
 		private String firstName;
 		private String lastName;
 		private String abbreviatedName;
+		private final int MAX_NAME_LENGTH = 16;
 		
 		public Student()
 		{
@@ -15,7 +16,10 @@ public class Student implements Comparable <Student>
 		{
 			firstName = fName;
 			lastName = lName;
-			abbreviatedName = fName.charAt(0) + "" + lName;
+			if(lName.length() > MAX_NAME_LENGTH)
+				abbreviatedName = fName.charAt(0) + lName.substring(0,MAX_NAME_LENGTH);
+			else
+				abbreviatedName = fName.charAt(0) + lName;
 		}
 		
 		public void setAbbreviatedName(String abName)

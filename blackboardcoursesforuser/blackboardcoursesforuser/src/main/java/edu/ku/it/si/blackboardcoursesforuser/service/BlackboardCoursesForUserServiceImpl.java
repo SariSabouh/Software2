@@ -349,7 +349,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			
 			logger.debug("Course names found for classes " + username + " is enrolled in are " + courseTitles.toString());
 			
-			//columnVOs = createColumn(columnVOs, "Add1"); // LINE THAT ADDS A COOLUMN WITH DESIRED NAME, after adding comment it to change grade to 99!
+			//columnVOs = createColumn(columnVOs, "daveTest"); // LINE THAT ADDS A COOLUMN WITH DESIRED NAME, after adding comment it to change grade to 99!
 			scoreVOs = checkArray(scoreVOs, columnVOs);
 			
 			//deleteColumn(columnVOs, 3); // LINE THAT DELETS A COLUMN TAKES THE ARRAY OF COLUMNS AND THE LOCATION OF THE COLUMN
@@ -368,7 +368,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		}
 		
 		
-		System.out.println(gradeDisplay(scoreNum));
+		System.out.println(displayGrades(scoreNum));
 		return scoreNum;
 
 		
@@ -427,7 +427,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		return newScores;
 	}
 	
-	public String gradeDisplay(List<String> list){
+	public String displayGrades(List<String> list){
 		String output = "";
 		for(int i = 0; i < list.size(); i++)
 		{
