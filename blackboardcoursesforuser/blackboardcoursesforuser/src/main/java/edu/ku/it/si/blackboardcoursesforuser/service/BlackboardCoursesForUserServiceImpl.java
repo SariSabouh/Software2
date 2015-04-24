@@ -350,7 +350,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 			logger.debug("Course names found for classes " + username + " is enrolled in are " + courseTitles.toString());
 			
 			//columnVOs = createColumn(columnVOs, "daveTest"); // LINE THAT ADDS A COOLUMN WITH DESIRED NAME, after adding comment it to change grade to 99!
-			scoreVOs = checkArray(scoreVOs, columnVOs);
+			scoreVOs = generateGradableAttempts(scoreVOs, columnVOs);
 			
 			//deleteColumn(columnVOs, 3); // LINE THAT DELETS A COLUMN TAKES THE ARRAY OF COLUMNS AND THE LOCATION OF THE COLUMN
 			
@@ -363,7 +363,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 						changeGrade(scoreVOs[k], "53");
 				}
 			}
-			updateGrades(scoreVOs, courseIds[0]);
+			publishGrades(scoreVOs, courseIds[0]);
 			
 		}
 		
@@ -385,10 +385,10 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		SaveColumns save = new SaveColumns();
 		save.setColumns(col);
 		save.setCourseId(col[i].getCourseId());
-		updateColumns(save);
+		publishColumns(save);
 	}
 	
-	public ScoreVO[] checkArray(ScoreVO[] scr, ColumnVO[] col){
+	public ScoreVO[] generateGradableAttempts(ScoreVO[] scr, ColumnVO[] col){
 		ArrayList<String> ids = new ArrayList<String>();
 		ArrayList<ScoreVO> output = new ArrayList<ScoreVO>();
 		for(int i = 0; i<scr.length; i++)
@@ -439,7 +439,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		return output;
 	}
 	
-	public void updateGrades(ScoreVO[] scores, String id) throws RemoteException{
+	public void publishGrades(ScoreVO[] scores, String id) throws RemoteException{
 		SaveGrades save = new SaveGrades();
 		save.setCourseId(id);
 		save.setGrades(scores);
@@ -456,7 +456,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		score.setManualScore(Double.parseDouble(grade));
 	}
 	
-	public void updateColumns(SaveColumns save) throws RemoteException{
+	public void publishColumns(SaveColumns save) throws RemoteException{
 		gradebookWSStub.saveColumns(save);
 	}
 	
@@ -496,7 +496,7 @@ public class BlackboardCoursesForUserServiceImpl implements BlackboardCoursesFor
 		SaveColumns save = new SaveColumns();
 		save.setColumns(newColumns);
 		save.setCourseId(col[0].getCourseId());
-		updateColumns(save);
+		publishColumns(save);
 		return newColumns;
 	}
 	
